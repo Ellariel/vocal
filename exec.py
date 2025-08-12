@@ -150,7 +150,7 @@ if __name__ == "__main__":
                     r.update(item.to_dict())
                     results = pd.concat([results, pd.DataFrame([r])])
                     
-                    if idx % 50 == 0:
+                    if idx % 25 == 0:
                         save_results(results, result_file)
 
             save_results(results, result_file)

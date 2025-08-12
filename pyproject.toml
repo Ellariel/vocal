@@ -13,4 +13,11 @@ dependencies = [
     "requests",
     "openpyxl",
     "scikit-learn",
+    "holoviews", 
+    "bokeh", 
+    "panel", 
+    "pillow", 
+    "wordcloud",
+    "matplotlib",
+    "ipykernel",
 ]
