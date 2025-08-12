@@ -20,17 +20,17 @@ When evaluating the text, you must:
 If the code **is applied**, format your answer as:
 
 ```
-Justification: [2–3 sentence rationale for applying the code].  
-Confidence: [confidence score between 0.0 and 1.0].  
-Code Applied: [{category_name}].  
+Justification: [2–3 sentence rationale for applying the code]
+Confidence: [confidence score between 0.0 and 1.0]
+Code Applied: [{category_name}]
 ```
 
 If the code **is not applied**, format your answer as:
 
 ```
-Justification: [2–3 sentence rationale for not applying the code].  
-Confidence: [confidence score between 0.0 and 1.0].  
-Code Applied: [None].  
+Justification: [2–3 sentence rationale for not applying the code]
+Confidence: [confidence score between 0.0 and 1.0]
+Code Applied: [None]
 ```
 
 **Important:** Do not include any additional text after the “Code Applied:” line.

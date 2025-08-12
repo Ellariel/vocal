@@ -25,6 +25,8 @@ doi = {},
 
 ### Sources and References
 
+- You may find these Guidelines useful: Garousi, V., Felderer, M., & Mäntylä, M. V. (2019). Guidelines for including grey literature and conducting multivocal literature reviews in software engineering. Information and Software Technology. https://doi.org/10.1016/j.infsof.2018.09.006
+
 
 
 

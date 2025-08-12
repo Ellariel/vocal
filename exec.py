@@ -132,7 +132,7 @@ if __name__ == "__main__":
             
         if n_done < n:
             texts = texts.iloc[n_done:]
-            for idx, item in tqdm(texts.iterrows(), total=len(texts), leave=False, desc=code):
+            for idx, item in tqdm(texts.iterrows(), total=len(texts), leave=False, desc=f"{code}/{args.model}"):
                     text = item['text_raw']
                     output = run_with_new_instance(client, prompt, text,
                                                 temperature=args.temp,
