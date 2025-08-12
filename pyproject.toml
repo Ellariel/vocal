@@ -1,0 +1,16 @@
+[project]
+name = "ln-multivocal-review"
+version = "0.1.0"
+description = ""
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "openai",
+    "tqdm",
+    "xlrd",
+    "dateparser",
+    "pandas",
+    "requests",
+    "openpyxl",
+    "scikit-learn",
+]
