@@ -100,10 +100,15 @@ if __name__ == "__main__":
     print(f'N = {texts.shape[0]}')
 
     texts = texts[texts['language'].str.contains('English')]
-    texts = texts[~texts['ArticleType'].str.contains('Scholarly Journals')].reset_index(drop=True) # .iloc[:5]
+    non_journals = texts[~texts['ArticleType'].str.contains('Scholarly Journals')].reset_index(drop=True) # .iloc[:5]
+    journals = texts[texts['ArticleType'].str.contains('Scholarly Journals')].reset_index(drop=True) # .iloc[:5]
 
+    print(f'n = {non_journals.shape[0]} (without journals)')
+    print(f'n = {journals.shape[0]} (journals)')
+
+    texts = pd.concat([non_journals, journals]).reset_index(drop=True)
     n = texts.shape[0]
-    print(f'n = {n}')
+    print(f'n = {texts.shape[0]} (total)')
 
     texts['store_id'] = texts['StoreId']
     texts['text_raw'] = texts.apply(lambda x: f"{x['Title']}. {x['Abstract']}. {x['identifierKeywords']}.", axis=1)
@@ -133,25 +138,30 @@ if __name__ == "__main__":
         if n_done < n:
             texts = texts.iloc[n_done:]
             for idx, item in tqdm(texts.iterrows(), total=len(texts), leave=False, desc=f"{code}/{args.model}"):
-                    text = item['text_raw']
-                    output = run_with_new_instance(client, prompt, text,
-                                                temperature=args.temp,
-                                                model=args.model,
-                                                seed=args.seed)
-                    # print(output)
-                    r = parse_output(output)
+                    try:
+                        text = item['text_raw']
+                        output = run_with_new_instance(client, prompt, text,
+                                                    temperature=args.temp,
+                                                    model=args.model,
+                                                    seed=args.seed)
+                        # print(output)
+                        r = parse_output(output)
 
-                    r.update({'version' : args.ver,
-                                'tested_code' : code,
-                                'model' : args.model,
-                                'temperature' : args.temp,
-                                'seed' : args.seed,
-                            })
-                    r.update(item.to_dict())
-                    results = pd.concat([results, pd.DataFrame([r])])
-                    
-                    if idx % 25 == 0:
-                        save_results(results, result_file)
+                        r.update({'version' : args.ver,
+                                    'tested_code' : code,
+                                    'model' : args.model,
+                                    'temperature' : args.temp,
+                                    'seed' : args.seed,
+                                })
+                        r.update(item.to_dict())
+                        results = pd.concat([results, pd.DataFrame([r])])
+                        
+                        if idx % 10 == 0:
+                            save_results(results, result_file)
+                            
+                    except Exception as e:
+                        print(e)
+                        break
 
             save_results(results, result_file)
             print(f"code saved: {result_file}.csv")

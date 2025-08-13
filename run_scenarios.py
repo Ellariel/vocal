@@ -31,7 +31,7 @@ def run_scenarios(temp, seed, ver, codes, base_dir, windows=False):
             print('<-----running scenario----->')
             threads.append(new(f"uv run {os.path.join(base_dir, 'exec.py')} --model {model} --temp {temp} --seed {seed} --ver {ver} --code {code}",
                                             **params))
-            time.sleep(3)
+            time.sleep(5)
 
     [i.wait() for i in threads]
 

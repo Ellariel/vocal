@@ -23,9 +23,14 @@ if __name__ == "__main__":
     os.makedirs(results_dir, exist_ok=True)
 
     codes = CODES['v1'].keys()
+
+    texts = [pd.read_excel(i) for i in glob(os.path.join(texts_dir, "*.xls"))]
+    texts = pd.concat(texts).reset_index(drop=True)
+    print(f'N = {texts.shape[0]} (texts)')
+
     results = [pd.read_excel(i) for i in glob(os.path.join(results_dir, "*.xlsx")) if 'joined' not in i]
     results = pd.concat(results).reset_index(drop=True)
-    print(f'N = {results.shape[0]}')
+    print(f'n = {results.shape[0]} (model outputs)')
 
     results['result'] = results.apply(lambda x: x['tested_code'] if x['tested_code'].lower() in\
                                         str(x['code_applied']).lower()[:len(x['tested_code'])*2] else None, 
@@ -45,9 +50,14 @@ if __name__ == "__main__":
         'confidence',
     ] + [i for i in joined.columns 
                 if i.startswith('code') and '_applied' not in i]]
+    
+    joined = pd.merge(joined, texts, left_on='store_id', right_on='StoreId', how='left')
+    print(f'n = {joined.shape[0]} (results)')
 
     joined.to_csv(os.path.join(results_dir, 'joined') + '.csv', sep=';', index=False)
     joined.to_excel(os.path.join(results_dir, 'joined') + '.xlsx', index=False)
+
+
 
 
 
