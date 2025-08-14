@@ -22,7 +22,7 @@ if __name__ == "__main__":
     os.makedirs(texts_dir, exist_ok=True)
     os.makedirs(results_dir, exist_ok=True)
 
-    codes = CODES['v1'].keys()
+    codes = list(CODES['v1'].keys())
 
     texts = [pd.read_excel(i) for i in glob(os.path.join(texts_dir, "*.xls"))]
     texts = pd.concat(texts).reset_index(drop=True)
@@ -54,9 +54,18 @@ if __name__ == "__main__":
     joined = pd.merge(joined, texts, left_on='store_id', right_on='StoreId', how='left')
     print(f'n = {joined.shape[0]} (results)')
 
+    for code in codes:
+        cols = [i for i in joined.columns if i.startswith(code + '_')]
+        joined[code] = joined.apply(lambda x: 1 if sum([int(pd.notna(x[i])) for i in cols]) / len(cols) >= 0.5 else 0, axis=1)
+
     joined.to_csv(os.path.join(results_dir, 'joined') + '.csv', sep=';', index=False)
     joined.to_excel(os.path.join(results_dir, 'joined') + '.xlsx', index=False)
 
+    filtered = joined[joined.apply(lambda x: bool(sum([x[code] for code in codes])), axis=1)]
+    
+    print(f'n = {filtered.shape[0]} (filtered)')
+    filtered.to_csv(os.path.join(results_dir, 'filtered') + '.csv', sep=';', index=False)
+    filtered.to_excel(os.path.join(results_dir, 'filtered') + '.xlsx', index=False)
 
 
 

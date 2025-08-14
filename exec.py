@@ -156,11 +156,11 @@ if __name__ == "__main__":
                         r.update(item.to_dict())
                         results = pd.concat([results, pd.DataFrame([r])])
                         
-                        if idx % 10 == 0:
+                        if idx % 5 == 0:
                             save_results(results, result_file)
                             
                     except Exception as e:
-                        print(e)
+                        print('\n', e)
                         break
 
             save_results(results, result_file)
