@@ -12,6 +12,7 @@ wheels/
 *.xls
 *.txt
 *.csv
+*.zip
 raw/
 
 # Virtual environments

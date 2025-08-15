@@ -5,17 +5,20 @@ from subprocess import Popen as new, CREATE_NEW_CONSOLE
 
 from codes import CODES
 
-MODELS = [
+OFFIS_ENDPOINT = "https://open-webui.lcl.offis.de/api"
+LOCAL_ENDPOINT = "http://localhost:11434/v1"
+
+MODELS = {
      #'llama3.1:8b',
      #'llama3.2:3b',
      #'phi4:14b',
      #'gemma3:27b',
-     'llama3.3:70b',
-     'deepseek-r1:70b',
-     'gpt-oss:120b',
-     'qwen3:235b',
+     'llama3.3:70b' : OFFIS_ENDPOINT,
+     'deepseek-r1:70b' : OFFIS_ENDPOINT,
+     'gpt-oss:120b' : OFFIS_ENDPOINT,
+     'qwen3:235b' : OFFIS_ENDPOINT,
      #'deepseek-r1:671b-0528',
-]
+}
 
 
 def run_scenarios(temp, seed, ver, codes, base_dir, windows=False):
@@ -27,9 +30,9 @@ def run_scenarios(temp, seed, ver, codes, base_dir, windows=False):
     params = dict() if not windows else dict(creationflags=CREATE_NEW_CONSOLE)
 
     for code in codes:
-        for model in MODELS:
-            print('<-----running scenario----->')
-            threads.append(new(f"uv run {os.path.join(base_dir, 'exec.py')} --model {model} --temp {temp} --seed {seed} --ver {ver} --code {code}",
+        for model, endpoint in MODELS.items():
+            print('\n<-----running scenario----->')
+            threads.append(new(f"uv run {os.path.join(base_dir, 'exec.py')} --model {model} --temp {temp} --seed {seed} --ver {ver} --code {code} --endpoint {endpoint}",
                                             **params))
             time.sleep(5)
 
@@ -48,24 +51,18 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     base_dir = os.path.dirname(__file__) if args.dir is None else args.dir
-    codes = CODES[args.ver]
+    codes = CODES[args.ver].keys()
 
     print('temp:', args.temp)
     print('seed:', args.seed)
     print('version:', args.ver)
-    if args.code is not None:
-        print('code:', args.code)
-    else:
-        print('codes:', list(codes.keys()))
+    print('code:', args.code if args.code is not None else codes)
 
-    if args.code is not None:
-        run_scenarios(args.temp, args.seed, 
-                      args.ver, [args.code], 
-                      base_dir=base_dir)
-    else:
-        run_scenarios(args.temp, args.seed, 
-                      args.ver, codes.keys(), 
-                      base_dir=base_dir)
+    run_scenarios(args.temp, 
+                  args.seed, 
+                  args.ver, 
+                  [args.code] if args.code is not None else codes, 
+                  base_dir=base_dir)
 
 
 

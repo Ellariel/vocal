@@ -68,6 +68,9 @@ def save_results(results, file_name):
         results.to_excel(file_name + '.xlsx', index=False)
 
 
+DEF_ENDPOINT = "https://open-webui.lcl.offis.de/api"
+
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
@@ -77,6 +80,7 @@ if __name__ == "__main__":
     parser.add_argument('--model', default='llama3.3:70b', type=str)
     parser.add_argument('--temp', default=1.5, type=float)
     parser.add_argument('--seed', default=1313, type=int)
+    parser.add_argument('--endpoint', default=DEF_ENDPOINT, type=str)
     args = parser.parse_args()
 
     base_dir = os.path.dirname(__file__) if args.dir is None else args.dir
@@ -86,10 +90,12 @@ if __name__ == "__main__":
 
     codes = CODES[args.ver]
 
+    print('endpoint:', args.endpoint)
     print('model:', args.model)
     print('temp:', args.temp)
     print('seed:', args.seed)
     print('version:', args.ver)
+
     if args.code is not None:
         print('code:', args.code)
          
@@ -114,7 +120,7 @@ if __name__ == "__main__":
     texts['text_raw'] = texts.apply(lambda x: f"{x['Title']}. {x['Abstract']}. {x['identifierKeywords']}.", axis=1)
 
     client = OpenAI(
-        base_url = "https://open-webui.lcl.offis.de/api",
+        base_url = args.endpoint,
         api_key = read_file(os.path.join(base_dir, "apikey.key"))
     )
 
@@ -137,7 +143,7 @@ if __name__ == "__main__":
             
         if n_done < n:
             texts = texts.iloc[n_done:]
-            for idx, item in tqdm(texts.iterrows(), total=len(texts), leave=False, desc=f"{code}/{args.model}"):
+            for idx, item in tqdm(texts.iterrows(),  initial=n_done, total=n, leave=False, desc=f"{code}/{args.model}"):
                     try:
                         text = item['text_raw']
                         output = run_with_new_instance(client, prompt, text,
