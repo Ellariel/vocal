@@ -32,8 +32,8 @@ if __name__ == "__main__":
     results = pd.concat(results).reset_index(drop=True)
     print(f'n = {results.shape[0]} (model outputs)')
 
-    results['result'] = results.apply(lambda x: x['tested_code'] if x['tested_code'].lower() in\
-                                        str(x['code_applied']).lower()[:len(x['tested_code'])*2] else None, 
+    results['result'] = results.apply(lambda x: x['tested_code'] if len(str(x['tested_code'])) and str(x['tested_code']).lower() in\
+                                      str(x['code_applied']).lower()[:len(str(x['tested_code']))*2] else None, 
                                       axis=1)
     
     joined = pd.DataFrame()

@@ -105,14 +105,16 @@ if __name__ == "__main__":
 
     print(f'N = {texts.shape[0]}')
 
+    non_english = texts[~texts['language'].str.contains('English')]
     texts = texts[texts['language'].str.contains('English')]
+
     non_journals = texts[~texts['ArticleType'].str.contains('Scholarly Journals')].reset_index(drop=True) # .iloc[:5]
     journals = texts[texts['ArticleType'].str.contains('Scholarly Journals')].reset_index(drop=True) # .iloc[:5]
 
     print(f'n = {non_journals.shape[0]} (without journals)')
     print(f'n = {journals.shape[0]} (journals)')
 
-    texts = pd.concat([non_journals, journals]).reset_index(drop=True)
+    texts = pd.concat([non_journals, journals, non_english]).reset_index(drop=True)
     n = texts.shape[0]
     print(f'n = {texts.shape[0]} (total)')
 
