@@ -164,15 +164,16 @@ if __name__ == "__main__":
                         r.update(item.to_dict())
                         results = pd.concat([results, pd.DataFrame([r])])
                         
-                        if idx % 5 == 0:
+                        if idx % 5 == 0 and len(results):
                             save_results(results, result_file)
                             
                     except Exception as e:
                         print('\n', e)
                         break
-
-            save_results(results, result_file)
-            print(f"code saved: {result_file}.csv")
+            
+            if len(results):
+                save_results(results, result_file)
+                print(f"results saved: {result_file}.csv")
 
 
     if args.code is not None:
