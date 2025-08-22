@@ -121,6 +121,9 @@ if __name__ == "__main__":
     texts['store_id'] = texts['StoreId']
     texts['text_raw'] = texts.apply(lambda x: f"{x['Title']}. {x['Abstract']}. {x['identifierKeywords']}.", axis=1)
 
+    texts.to_csv(os.path.join(results_dir, "merged") + '.csv', sep=';', index=False)
+    texts.to_excel(os.path.join(results_dir, "merged") + '.xlsx', index=False)
+
     client = OpenAI(
         base_url = args.endpoint,
         api_key = read_file(os.path.join(base_dir, "apikey.key"))
